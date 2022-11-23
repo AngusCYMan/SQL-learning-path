@@ -1,0 +1,28 @@
+## https://platform.stratascratch.com/coding/2088-seat-availability?tabname=question
+## Interview Question from Robinhood
+## A movie theater gave you two tables: seats that are available for an upcoming screening and neighboring seats for each seat listed. You are asked to find all pairs of seats that are both adjacent and available.
+Output only distinct pairs of seats in two columns such that the seat with the lower number is always in the first column and the one with the higher number is in the second column.
+
+## Tables: 1. theater_availability: seat_number: int
+                                    is_available: bool
+           2. theater_seatmap:  seat_number: int
+                                seat_left: float
+                                seat_right: float
+
+Solution: 
+WITH adj_seat AS 
+    (   select seat_left AS LEFT_SEAT, seat_number AS RIGH_SEAT
+        FROM theater_seatmap
+    UNION
+        select seat_number AS LEFT_SEAT, seat_right AS RIGH_SEAT
+        FROM theater_seatmap)
+        
+SELECT 
+    adj.LEFT_SEAT,
+    adj.RIGH_SEAT
+FROM adj_seat adj
+JOIN theater_availability TA1 ON TA1.seat_number = adj.LEFT_SEAT
+JOIN theater_availability TA2 ON TA2.seat_number = adj.RIGH_SEAT
+WHERE TA1.is_available = 'TRUE'
+AND TA2.is_available = 'TRUE';
+
